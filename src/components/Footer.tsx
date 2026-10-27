@@ -1,7 +1,17 @@
 import React from 'react';
-import { ArrowUp, Sparkles } from 'lucide-react';
+import { ArrowUp, Sparkles, Lock, ShieldCheck } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  isOwnerAuthenticated?: boolean;
+  onOpenAuthModal?: () => void;
+  onOpenChangeImage?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({
+  isOwnerAuthenticated = false,
+  onOpenAuthModal,
+  onOpenChangeImage,
+}) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -48,7 +58,36 @@ export const Footer: React.FC = () => {
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-purple-300/60">
           <p>© 2026 Jannat Ara Sorna | Personal Portfolio</p>
-          <p>Created with clean modern design</p>
+          
+          <div className="flex items-center gap-4">
+            {isOwnerAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onOpenChangeImage}
+                  className="text-[11px] text-purple-300 hover:text-white underline underline-offset-2 transition-colors flex items-center gap-1"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Change Profile Image</span>
+                </button>
+                <span className="text-purple-600">·</span>
+                <button
+                  onClick={onOpenAuthModal}
+                  className="text-[11px] text-purple-300 hover:text-white transition-colors"
+                >
+                  Owner Settings
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuthModal}
+                className="text-[11px] text-purple-400/80 hover:text-purple-200 transition-colors flex items-center gap-1"
+                title="Owner Administration Portal"
+              >
+                <Lock className="w-3 h-3" />
+                <span>Owner Portal</span>
+              </button>
+            )}
+          </div>
         </div>
 
       </div>
