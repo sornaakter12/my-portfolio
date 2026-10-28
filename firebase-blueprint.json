@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "visitorCount": {
+      "title": "Visitor Count",
+      "description": "Aggregated visitor count metric for portfolio traffic",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "number",
+          "description": "Total count of unique site visits"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the most recent visit"
+        }
+      },
+      "required": ["count"]
+    }
+  },
+  "firestore": {
+    "/analytics/{metricId}": {
+      "schema": "#/entities/visitorCount",
+      "description": "Public metrics document containing site traffic and visitor counts"
+    }
+  }
+}

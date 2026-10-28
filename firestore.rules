@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidMetricId(id) {
+      return id is string && id.size() <= 32 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    match /analytics/{metricId} {
+      // Anyone can fetch the visitor metric document by ID
+      allow get: if isValidMetricId(metricId);
+      // Deny collection listing queries to avoid scraping
+      allow list: if false;
+
+      // When initializing counter, start at 1
+      allow create: if isValidMetricId(metricId) &&
+                    incoming().keys().hasOnly(['count', 'updatedAt']) &&
+                    incoming().count is number &&
+                    incoming().count == 1 &&
+                    incoming().updatedAt == request.time;
+
+      // On visit, atomic increment by 1
+      allow update: if isValidMetricId(metricId) &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['count', 'updatedAt']) &&
+                    incoming().count is number &&
+                    incoming().count == existing().count + 1 &&
+                    incoming().updatedAt == request.time;
+
+      // Deletion is strictly forbidden
+      allow delete: if false;
+    }
+  }
+}

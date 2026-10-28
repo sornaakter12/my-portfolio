@@ -15,6 +15,7 @@ import { ProjectModal } from './components/ProjectModal';
 import { ChangeProfileImageModal } from './components/ChangeProfileImageModal';
 import { OwnerAuthModal } from './components/OwnerAuthModal';
 import { WorkSample } from './data/portfolioData';
+import { recordVisit, subscribeToVisitorCount, testFirestoreConnection } from './lib/firebase';
 
 import defaultPortrait from './assets/images/jannat_portrait_1793073549037.jpg';
 
@@ -30,12 +31,32 @@ export default function App() {
   const [isOwnerAuthenticated, setIsOwnerAuthenticated] = useState<boolean>(false);
   const [ownerEmail, setOwnerEmail] = useState<string>('j41975994@gmail.com');
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
 
   // Modals
   const [isChangeImageOpen, setIsChangeImageOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // 1. Fetch server-persisted profile image on mount (safe against Firebase Hosting HTML rewrites)
+  // 1. Firebase persistent visitor counter: record visit & listen for real-time changes
+  useEffect(() => {
+    testFirestoreConnection();
+
+    recordVisit().then((count) => {
+      if (typeof count === 'number') {
+        setVisitorCount(count);
+      }
+    });
+
+    const unsubscribe = subscribeToVisitorCount((count) => {
+      setVisitorCount(count);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // 2. Fetch server-persisted profile image on mount (safe against Firebase Hosting HTML rewrites)
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
@@ -151,6 +172,7 @@ export default function App() {
         isOwnerAuthenticated={isOwnerAuthenticated}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onOpenChangeImage={() => setIsChangeImageOpen(true)}
+        visitorCount={visitorCount}
       />
 
       {/* Lightbox / Sample Viewer */}
@@ -178,6 +200,7 @@ export default function App() {
         onLogout={handleLogout}
         onOpenChangeImage={() => setIsChangeImageOpen(true)}
         token={authToken}
+        visitorCount={visitorCount}
       />
     </div>
   );

@@ -10,6 +10,7 @@ interface OwnerAuthModalProps {
   onLogout: () => void;
   onOpenChangeImage: () => void;
   token: string | null;
+  visitorCount?: number | null;
 }
 
 export const OwnerAuthModal: React.FC<OwnerAuthModalProps> = ({
@@ -21,6 +22,7 @@ export const OwnerAuthModal: React.FC<OwnerAuthModalProps> = ({
   onLogout,
   onOpenChangeImage,
   token,
+  visitorCount = null,
 }) => {
   const [emailInput, setEmailInput] = useState('j41975994@gmail.com');
   const [passwordInput, setPasswordInput] = useState('');
@@ -167,6 +169,12 @@ export const OwnerAuthModal: React.FC<OwnerAuthModalProps> = ({
               </div>
               <div className="text-xs text-slate-600 font-mono truncate">
                 {ownerEmail}
+              </div>
+              <div className="mt-3 pt-3 border-t border-purple-200/60 flex items-center justify-between text-xs">
+                <span className="text-purple-900 font-medium">Total Site Visitors (Firebase):</span>
+                <span className="font-bold font-mono text-purple-950 bg-purple-200/70 px-2 py-0.5 rounded border border-purple-300/50">
+                  {visitorCount !== null ? visitorCount.toLocaleString() : '...'}
+                </span>
               </div>
             </div>
 
