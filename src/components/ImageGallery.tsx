@@ -12,6 +12,12 @@ import {
   RotateCcw
 } from 'lucide-react';
 
+import aiArtworkImg from '../assets/images/project_ai_artwork_1793073549524.jpg';
+import logoDesignImg from '../assets/images/sample_logo_design_1793075212924.jpg';
+import websiteMakingImg from '../assets/images/sample_website_making_1793075212980.jpg';
+import socialMediaImg from '../assets/images/project_social_media_1793073550444.jpg';
+import posterDesignImg from '../assets/images/project_poster_design_1793073550254.jpg';
+
 export interface GalleryItem {
   id: string;
   title: string;
@@ -29,7 +35,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     title: 'Crystal Botanical Sanctuary',
     category: 'ai-image',
     categoryLabel: 'AI Image Create',
-    image: '/src/assets/images/project_ai_artwork_1793073549524.jpg',
+    image: aiArtworkImg,
     description: 'Fantasy concept artwork generated with generative AI, featuring bioluminescent lavender flowers, glowing crystals, and cinematic ambient lighting.',
     date: '2026',
   },
@@ -38,7 +44,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     title: 'Aethel Luxury Monogram Logo',
     category: 'logo-design',
     categoryLabel: 'Logo Design',
-    image: '/src/assets/images/sample_logo_design_1793075212924.jpg',
+    image: logoDesignImg,
     description: 'Embossed luxury monogram emblem in royal purple and gold foil, designed for upscale branding.',
     date: '2026',
   },
@@ -47,7 +53,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     title: 'Aura Responsive Web UI',
     category: 'website-making',
     categoryLabel: 'Website Making',
-    image: '/src/assets/images/sample_website_making_1793075212980.jpg',
+    image: websiteMakingImg,
     description: 'Clean modern website interface with responsive layouts, purple accents, and fluid desktop-to-mobile structure.',
     date: '2026',
   },
@@ -56,7 +62,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     title: 'Social Media Carousel Series',
     category: 'ai-image',
     categoryLabel: 'AI & Graphics',
-    image: '/src/assets/images/project_social_media_1793073550444.jpg',
+    image: socialMediaImg,
     description: 'Aesthetic multi-slide social carousel design with pastel purple color harmony and modern typography.',
     date: '2026',
   },
@@ -65,20 +71,26 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     title: 'Design Festival & AI Workshop Poster',
     category: 'other',
     categoryLabel: 'Poster Design',
-    image: '/src/assets/images/project_poster_design_1793073550254.jpg',
+    image: posterDesignImg,
     description: 'Swiss-inspired promotional event poster balancing bold geometric layout and duotone typography.',
     date: '2026',
   },
 ];
 
-const LOCAL_STORAGE_GALLERY_KEY = 'jannat_portfolio_gallery_v2';
+const LOCAL_STORAGE_GALLERY_KEY = 'jannat_portfolio_gallery_v3';
 
 export const ImageGallery: React.FC = () => {
   const [items, setItems] = useState<GalleryItem[]>(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_GALLERY_KEY);
+      const saved = localStorage.getItem(LOCAL_STORAGE_GALLERY_KEY) || localStorage.getItem('jannat_portfolio_gallery_v2');
       if (saved) {
-        return JSON.parse(saved);
+        const parsed: GalleryItem[] = JSON.parse(saved);
+        return parsed.map((item) => ({
+          ...item,
+          image: item.image && item.image.startsWith('/src/assets/images/')
+            ? item.image.replace('/src/assets/images/', '/assets/images/')
+            : item.image,
+        }));
       }
     } catch (e) {
       console.error('Failed to load gallery items from storage', e);
@@ -309,9 +321,19 @@ export const ImageGallery: React.FC = () => {
                 {/* Image Container */}
                 <div className="relative aspect-[4/3] bg-purple-50 overflow-hidden">
                   <img
-                    src={item.image}
+                    src={
+                      item.image && item.image.startsWith('/src/assets/images/')
+                        ? item.image.replace('/src/assets/images/', '/assets/images/')
+                        : item.image
+                    }
                     alt={item.title}
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (target.src.includes('/src/assets/images/')) {
+                        target.src = target.src.replace('/src/assets/images/', '/assets/images/');
+                      }
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
 
@@ -526,9 +548,19 @@ export const ImageGallery: React.FC = () => {
 
             <div className="rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 flex items-center justify-center mb-4">
               <img
-                src={previewItem.image}
+                src={
+                  previewItem.image && previewItem.image.startsWith('/src/assets/images/')
+                    ? previewItem.image.replace('/src/assets/images/', '/assets/images/')
+                    : previewItem.image
+                }
                 alt={previewItem.title}
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('/src/assets/images/')) {
+                    target.src = target.src.replace('/src/assets/images/', '/assets/images/');
+                  }
+                }}
                 className="w-full max-h-[500px] object-contain"
               />
             </div>

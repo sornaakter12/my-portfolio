@@ -208,8 +208,18 @@ export const ChangeProfileImageModal: React.FC<ChangeProfileImageModalProps> = (
             </span>
             <div className="w-full max-w-[210px] aspect-[3/4] rounded-t-[100px] rounded-b-2xl border-2 border-purple-200 overflow-hidden bg-purple-50 shadow-sm relative">
               <img
-                src={currentImageUrl}
+                src={
+                  currentImageUrl && currentImageUrl.startsWith('/src/assets/images/')
+                    ? currentImageUrl.replace('/src/assets/images/', '/assets/images/')
+                    : currentImageUrl
+                }
                 alt="Current Profile"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('/src/assets/images/')) {
+                    target.src = target.src.replace('/src/assets/images/', '/assets/images/');
+                  }
+                }}
                 className="w-full h-full object-cover object-top"
               />
               <div className="absolute bottom-2 inset-x-2 bg-black/60 backdrop-blur-xs text-white text-[10px] text-center py-1 rounded-md">

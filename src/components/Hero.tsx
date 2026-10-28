@@ -100,9 +100,19 @@ export const Hero: React.FC<HeroProps> = ({
               {/* Main Arched Frame */}
               <div className="relative overflow-hidden rounded-t-[170px] rounded-b-3xl border-4 border-white shadow-xl bg-purple-50 aspect-[3/4] group">
                 <img
-                  src={profileImageUrl || '/src/assets/images/jannat_portrait_1793073549037.jpg'}
+                  src={
+                    profileImageUrl && profileImageUrl.startsWith('/src/assets/images/')
+                      ? profileImageUrl.replace('/src/assets/images/', '/assets/images/')
+                      : profileImageUrl || '/assets/images/jannat_portrait_1793073549037.jpg'
+                  }
                   alt="Jannat Ara Sorna Profile"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (target.src.includes('/src/assets/images/')) {
+                      target.src = target.src.replace('/src/assets/images/', '/assets/images/');
+                    }
+                  }}
                   className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700"
                 />
 

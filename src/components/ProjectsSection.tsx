@@ -106,9 +106,19 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectSample
                   onClick={() => onSelectSample(sample)}
                 >
                   <img
-                    src={sample.image}
+                    src={
+                      sample.image && sample.image.startsWith('/src/assets/images/')
+                        ? sample.image.replace('/src/assets/images/', '/assets/images/')
+                        : sample.image
+                    }
                     alt={sample.title}
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (target.src.includes('/src/assets/images/')) {
+                        target.src = target.src.replace('/src/assets/images/', '/assets/images/');
+                      }
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
 

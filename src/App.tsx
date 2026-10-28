@@ -16,12 +16,17 @@ import { ChangeProfileImageModal } from './components/ChangeProfileImageModal';
 import { OwnerAuthModal } from './components/OwnerAuthModal';
 import { WorkSample } from './data/portfolioData';
 
+import defaultPortrait from './assets/images/jannat_portrait_1793073549037.jpg';
+
 const OWNER_TOKEN_KEY = 'jannat_owner_auth_token_v1';
-const DEFAULT_IMAGE = '/src/assets/images/jannat_portrait_1793073549037.jpg';
+const SAVED_IMAGE_KEY = 'jannat_active_profile_image_v1';
+const DEFAULT_IMAGE = defaultPortrait;
 
 export default function App() {
   const [selectedSample, setSelectedSample] = useState<WorkSample | null>(null);
-  const [profileImageUrl, setProfileImageUrl] = useState<string>(DEFAULT_IMAGE);
+  const [profileImageUrl, setProfileImageUrl] = useState<string>(() => {
+    return localStorage.getItem(SAVED_IMAGE_KEY) || DEFAULT_IMAGE;
+  });
   const [isOwnerAuthenticated, setIsOwnerAuthenticated] = useState<boolean>(false);
   const [ownerEmail, setOwnerEmail] = useState<string>('j41975994@gmail.com');
   const [authToken, setAuthToken] = useState<string | null>(null);
@@ -30,19 +35,21 @@ export default function App() {
   const [isChangeImageOpen, setIsChangeImageOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // 1. Fetch server-persisted profile image on mount
+  // 1. Fetch server-persisted profile image on mount (safe against Firebase Hosting HTML rewrites)
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
         const res = await fetch('/api/profile-image');
-        if (res.ok) {
+        const contentType = res.headers.get('content-type');
+        if (res.ok && contentType && contentType.includes('application/json')) {
           const data = await res.json();
-          if (data.profileImageUrl) {
+          if (data && data.profileImageUrl) {
             setProfileImageUrl(data.profileImageUrl);
+            localStorage.setItem(SAVED_IMAGE_KEY, data.profileImageUrl);
           }
         }
       } catch (err) {
-        console.error('Failed to fetch profile image from server:', err);
+        // Keep default / localStorage image
       }
     };
 
@@ -103,6 +110,7 @@ export default function App() {
 
   const handleImageUpdated = (newUrl: string) => {
     setProfileImageUrl(newUrl);
+    localStorage.setItem(SAVED_IMAGE_KEY, newUrl);
   };
 
   return (

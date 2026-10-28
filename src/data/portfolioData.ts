@@ -1,7 +1,13 @@
 /**
  * Clean Portfolio Data for Jannat Ara Sorna
  * Focused on core skills: AI Image Create, Logo Design, Website Making, Tool Making
+ * Uses direct asset imports for guaranteed static bundling on Firebase Hosting and GitHub Pages.
  */
+
+import aiArtworkImg from '../assets/images/project_ai_artwork_1793073549524.jpg';
+import logoDesignImg from '../assets/images/sample_logo_design_1793075212924.jpg';
+import websiteMakingImg from '../assets/images/sample_website_making_1793075212980.jpg';
+import socialMediaImg from '../assets/images/project_social_media_1793073550444.jpg';
 
 export interface WorkSample {
   id: string;
@@ -81,7 +87,7 @@ export const WORK_SAMPLES: WorkSample[] = [
     title: 'Crystal Botanical Sanctuary (AI Concept Art)',
     category: 'ai-image',
     categoryLabel: 'AI Image Create',
-    image: '/src/assets/images/project_ai_artwork_1793073549524.jpg',
+    image: aiArtworkImg,
     description: 'Fantasy concept artwork generated with generative AI, featuring bioluminescent lavender flowers, glowing crystals, and cinematic ambient lighting.',
     tools: ['Generative AI', 'Prompt Syntax', 'Digital Art'],
     promptUsed: 'Vibrant digital concept artwork created with generative AI, fantastical surreal botanical garden with luminous violet and lavender flowers, glowing crystal elements, dreamy cinematic lighting, high resolution digital art showcase',
@@ -91,7 +97,7 @@ export const WORK_SAMPLES: WorkSample[] = [
     title: 'Aethel Luxury Monogram & Brand Logo',
     category: 'logo-design',
     categoryLabel: 'Logo Design',
-    image: '/src/assets/images/sample_logo_design_1793075212924.jpg',
+    image: logoDesignImg,
     description: 'Embossed luxury monogram emblem in royal purple and gold foil, designed for an upscale beauty and fashion lifestyle brand.',
     tools: ['Logo Concepting', 'Vector Branding', 'Typography Hierarchy'],
     features: ['Custom monogram ligature', 'High-contrast purple & gold scheme', 'Scalable branding'],
@@ -101,7 +107,7 @@ export const WORK_SAMPLES: WorkSample[] = [
     title: 'Aura Responsive Web Design & UI',
     category: 'website-making',
     categoryLabel: 'Website Making',
-    image: '/src/assets/images/sample_website_making_1793075212980.jpg',
+    image: websiteMakingImg,
     description: 'Clean modern website interface with responsive layouts, purple accents, balanced whitespace, and seamless device responsiveness.',
     tools: ['React & Tailwind', 'Responsive Design', 'Clean UI Architecture'],
     features: ['Fluid mobile-to-desktop grid', 'Accessible typography', 'Fast client-side interaction'],
@@ -111,7 +117,7 @@ export const WORK_SAMPLES: WorkSample[] = [
     title: 'Interactive Design Palette & AI Prompt Tool',
     category: 'tool-making',
     categoryLabel: 'Tool Making',
-    image: '/src/assets/images/project_social_media_1793073550444.jpg',
+    image: socialMediaImg,
     description: 'A live interactive utility built to instantly generate coordinated color palettes, hex codes, and generative AI prompt formulas with one click.',
     tools: ['Interactive Web Logic', 'State Management', 'Prompt Algorithm'],
     features: ['Instant 1-click generation', 'Direct clipboard copy', 'Live preview in browser'],

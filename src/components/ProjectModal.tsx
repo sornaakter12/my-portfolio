@@ -50,9 +50,19 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ sample, onClose }) =
         <div className="p-6 sm:p-8 space-y-5">
           <div className="rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 shadow-inner flex items-center justify-center">
             <img
-              src={sample.image}
+              src={
+                sample.image && sample.image.startsWith('/src/assets/images/')
+                  ? sample.image.replace('/src/assets/images/', '/assets/images/')
+                  : sample.image
+              }
               alt={sample.title}
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (target.src.includes('/src/assets/images/')) {
+                  target.src = target.src.replace('/src/assets/images/', '/assets/images/');
+                }
+              }}
               className="w-full max-h-[460px] object-contain"
             />
           </div>

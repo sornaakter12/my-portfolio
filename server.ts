@@ -23,7 +23,7 @@ if (!fs.existsSync(PROFILE_CONFIG_FILE)) {
     PROFILE_CONFIG_FILE,
     JSON.stringify(
       {
-        profileImageUrl: '/src/assets/images/jannat_portrait_1793073549037.jpg',
+        profileImageUrl: '/assets/images/jannat_portrait_1793073549037.jpg',
         updatedAt: new Date().toISOString(),
         updatedBy: 'system',
       },
@@ -81,8 +81,18 @@ setInterval(() => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static uploads serving
+// Static uploads and public assets serving (ensures all images load in dev and prod)
+const PUBLIC_DIR = path.resolve(process.cwd(), 'public');
+const PUBLIC_ASSETS_DIR = path.resolve(PUBLIC_DIR, 'assets', 'images');
+const SRC_ASSETS_DIR = path.resolve(process.cwd(), 'src', 'assets', 'images');
+
 app.use('/uploads', express.static(UPLOADS_DIR));
+app.use('/assets/images', express.static(PUBLIC_ASSETS_DIR));
+app.use('/src/assets/images', express.static(PUBLIC_ASSETS_DIR));
+if (fs.existsSync(SRC_ASSETS_DIR)) {
+  app.use('/src/assets/images', express.static(SRC_ASSETS_DIR));
+}
+app.use(express.static(PUBLIC_DIR));
 
 // Server-side Authentication Guard
 function requireOwnerAuth(req: Request, res: Response, next: NextFunction): void {
@@ -117,7 +127,7 @@ app.get('/api/profile-image', (_req: Request, res: Response) => {
       res.json(data);
     } else {
       res.json({
-        profileImageUrl: '/src/assets/images/jannat_portrait_1793073549037.jpg',
+        profileImageUrl: '/assets/images/jannat_portrait_1793073549037.jpg',
         updatedAt: new Date().toISOString(),
       });
     }
